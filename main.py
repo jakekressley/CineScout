@@ -24,7 +24,9 @@ async def read_root():
 async def get_score(username):
     scores = get_user_ratings(username)
     get_hot_takes(scores)
-    return scores
+    user_scores = scores;
+    scores = []
+    return user_scores
 #scores = get_user_ratings(username)
 #get_hot_takes(scores)
 #print(user_average_rating(scores))
