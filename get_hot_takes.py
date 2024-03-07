@@ -37,6 +37,7 @@ def get_hot_takes(scores):
     scores.sort(key=lambda x: x['hotness'])
     for movie in scores:
         print("Title:"+ movie['title'], ", User:", movie['user_rating'], "Avg:", movie['average'], "votes:", movie['votes'], ", hotness", movie['hotness'])
+    return scores
 
 def mean(arr):
     return sum(arr) / len(arr)
