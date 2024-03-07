@@ -20,9 +20,9 @@ app.add_middleware(
 async def read_root():
     return {"Status": "Active"}
 
-@app.get("/user/")
-async def get_score():
-    scores = get_user_ratings("itsjake77")
+@app.get("/user/{username}")
+async def get_score(username):
+    scores = get_user_ratings(username)
     get_hot_takes(scores)
     return scores
 #scores = get_user_ratings(username)
