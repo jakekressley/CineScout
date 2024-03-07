@@ -16,17 +16,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-username = input("Enter username: ")
-
 @app.get("/")
 async def read_root():
     return {"Status": "Active"}
 
-@app.get("/user/{username}")
+@app.get("/user/")
 async def get_score():
-    scores = get_user_ratings(username)
+    scores = get_user_ratings("itsjake77")
     get_hot_takes(scores)
     return scores
 #scores = get_user_ratings(username)
 #get_hot_takes(scores)
 #print(user_average_rating(scores))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=10000)
