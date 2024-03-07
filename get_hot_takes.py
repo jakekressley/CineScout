@@ -34,7 +34,7 @@ def get_hot_takes(scores):
 
         movie['hotness'] = round(hotness, 2)
 
-    scores.sort(key=lambda x: x['hotness'])
+    scores.sort(key=lambda x: x['hotness'], reverse=True)
     for movie in scores:
         print("Title:"+ movie['title'], ", User:", movie['user_rating'], "Avg:", movie['average'], "votes:", movie['votes'], ", hotness", movie['hotness'])
     return scores
