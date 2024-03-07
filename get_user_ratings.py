@@ -10,13 +10,13 @@ import math
 
 load_dotenv()
 
-scores = []
 cluster, db_name, collection_name = connect_to_db()
 
 db = cluster[db_name]
 collection = db[collection_name]
 
 def get_user_ratings(username):
+    scores = []
     user_pages = get_page_count(username)
     current_page = 1
     while current_page <= user_pages:

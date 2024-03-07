@@ -23,7 +23,7 @@ async def read_root():
 @app.get("/user/{username}")
 async def get_score(username):
     scores = get_user_ratings(username)
-    return scores
+    return get_hot_takes(scores)
 #print(user_average_rating(scores))
 
 if __name__ == "__main__":
