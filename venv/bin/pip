@@ -1,4 +1,4 @@
-#!/Users/jakekressley/Desktop/Code/Projects/CineScout/venv/bin/python3.12
+#!/Users/jakekressley/Desktop/Code/Projects/CineScout/api/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

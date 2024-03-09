@@ -32,11 +32,15 @@ def get_top_movies():
             movie_average = movie['vote_average']
             movie_vote_count = movie['vote_count']
             tmdb_id = movie['id']
+            movie_year = movie['release_date'][0:4]
+            movie_poster = movie['poster_path']
             model = {
                     "Title": movie_title,
                     "tmdb_id": tmdb_id,
                     "Average Score": movie_average,
-                    "Vote Count": movie_vote_count
+                    "Vote Count": movie_vote_count,
+                    "Year": movie_year,
+                    "Poster": movie_poster,
             }
             collection.update_one({'Title' : movie_title}, {'$set' : model}, upsert=True)
         page_count += 1
