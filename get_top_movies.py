@@ -29,10 +29,16 @@ def get_top_movies():
         for movie in movie_response.json()['results']:
             print(movie['title'], movie['vote_average'], movie['vote_count'])
             movie_title = movie['title']
-            movie_average = movie['vote_average']
-            movie_vote_count = movie['vote_count']
             tmdb_id = movie['id']
-            movie_year = movie['release_date'][0:4]
+            dupe_check = collection.find_one({'tmdb_id': tmdb_id})
+            if dupe_check is not None:
+                continue
+            movie_average = movie['vote_average']
+            # movie is not out yet
+            if (movie_average == 0):
+                continue
+            movie_vote_count = movie['vote_count']
+            movie_year = movie['release_date'][:4]
             movie_poster = movie['poster_path']
             model = {
                     "Title": movie_title,
@@ -42,10 +48,13 @@ def get_top_movies():
                     "Year": movie_year,
                     "Poster": movie_poster,
             }
-            collection.update_one({'Title' : movie_title}, {'$set' : model}, upsert=True)
+            collection.update_one({'tmdb_id' : tmdb_id}, {'$set' : model}, upsert=True)
         page_count += 1
 
 get_top_movies()
+# sets year and poster to None for troubleshooting
+#collection.update_many({}, {'$set': {'Poster': None, 'Year': None}})
+#collection.delete_many({})
 
 def movie_in_db(title):
     movie = collection.find_one({'Title': title})

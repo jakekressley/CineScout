@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-url = "https://api.themoviedb.org/3/movie/650"
+url = "https://api.themoviedb.org/3/movie/725201"
 
 headers = {
     "accept": "application/json",

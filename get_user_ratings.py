@@ -50,6 +50,7 @@ def get_user_ratings(username):
                         continue
                 else:
                     movie = collection.find_one({'Title': movie_title})
+                    print("getting movie:", movie_title)
                     tmdb_id = movie['tmdb_id']
                     average = movie['Average Score']
                     votes = movie['Vote Count']
@@ -62,7 +63,7 @@ def get_user_ratings(username):
 
                         poster_path = movie.json()['poster_path']
                         year_released = movie.json()['release_date'][:4]
-                        collection.update_one({'Title' : movie_title}, {'$set' : {'Poster': poster_path, 'Year': year_released}}, upsert=True)
+                        collection.update_one({'tmdb_id' : tmdb_id}, {'$set' : {'Poster': poster_path, 'Year': year_released}}, upsert=True)
 
                 score_data = {
                     "title": movie_title,

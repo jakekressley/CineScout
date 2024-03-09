@@ -18,6 +18,10 @@ def get_average_scores(movie_title):
     url = "https://letterboxd.com/film/{}/"
     page = requests.get(url.format(movie_title))
     soup = BeautifulSoup(page.content, 'html.parser')
+    tmdb_api_headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {os.getenv('TMDB_API_READ_ACCESS_TOKEN')}"
+    }
     try:
         imdb_link = soup.find("a", attrs={"data-track-action": "IMDb"})['href']
         imdb_id = imdb_link.split('/')[4]
@@ -32,14 +36,25 @@ def get_average_scores(movie_title):
         movie_title = movie_response.json()['title']
         movie_average = movie_response.json()['vote_average']
         movie_vote_count = movie_response.json()['vote_count']
+
+        tmdb_url = "https://api.themoviedb.org/3/movie/{}"
+        tmdb_url = tmdb_url.format(tmdb_id)
+        movie_response = requests.get(tmdb_url, headers=tmdb_api_headers)
+        year = movie_response.json()['release_date'][-4]
+        poster_path = movie_response.json()['poster_path']
+        #print(year)
+        #print(poster_path)
+
         model = {
             "Title": movie_title,
             "tmdb_id": tmdb_id,
             "Average Score": movie_average,
-            "Vote Count": movie_vote_count
+            "Vote Count": movie_vote_count,
+            "poster": poster_path,
+            "year": year,
         }
         #print(movie_title)
-        collection.update_one({'Title' : movie_title}, {'$set' : model}, upsert=True)
+        collection.update_one({'tmdb_id' : tmdb_id}, {'$set' : model}, upsert=True)
         return movie_average, movie_vote_count
 
     except:
@@ -47,3 +62,4 @@ def get_average_scores(movie_title):
         tmdb_id = ''
         return 0, 0
     
+get_average_scores('dune(2021)')
