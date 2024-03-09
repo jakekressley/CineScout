@@ -24,6 +24,11 @@ def get_user_ratings(username):
         page = requests.get(url.format(username, current_page))
         soup = BeautifulSoup(page.content, "html.parser")
 
+        tmdb_api_headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {os.getenv('TMDB_API_READ_ACCESS_TOKEN')}"
+        }
+
         results = soup.find(class_="poster-list")
         movies = results.findAll("li", class_="poster-container")
         for movie in movies:
@@ -45,10 +50,20 @@ def get_user_ratings(username):
                         continue
                 else:
                     movie = collection.find_one({'Title': movie_title})
+                    tmdb_id = movie['tmdb_id']
                     average = movie['Average Score']
                     votes = movie['Vote Count']
                     poster_path = movie['Poster']
                     year_released = movie['Year']
+                    if poster_path is None:
+                        tmdb_url = "https://api.themoviedb.org/3/movie/{}"
+                        tmdb_url = tmdb_url.format(tmdb_id)
+                        movie = requests.get(tmdb_url, headers=tmdb_api_headers)
+
+                        poster_path = movie.json()['poster_path']
+                        year_released = movie.json()['release_date'][:4]
+                        collection.update_one({'Title' : movie_title}, {'$set' : {'Poster': poster_path, 'Year': year_released}}, upsert=True)
+
                 score_data = {
                     "title": movie_title,
                     "user_rating": user_rating,

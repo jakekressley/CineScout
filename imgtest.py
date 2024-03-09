@@ -4,15 +4,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-url = "https://api.themoviedb.org/3/movie/650?language=en-US"
+url = "https://api.themoviedb.org/3/movie/650"
 
 headers = {
     "accept": "application/json",
     "Authorization": f"Bearer {os.getenv('TMDB_API_READ_ACCESS_TOKEN')}"       
 }
 
-response = requests.get(url, headers=headers)
+movie = requests.get(url, headers=headers)
 
-for movie in response.json():
-    print(movie)
+print(movie.json()['poster_path'])
+print(movie.json()['release_date'][:4])
 #print(response.poster_path.text)
