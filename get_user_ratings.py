@@ -47,11 +47,15 @@ def get_user_ratings(username):
                     movie = collection.find_one({'Title': movie_title})
                     average = movie['Average Score']
                     votes = movie['Vote Count']
+                    poster_path = movie['Poster']
+                    year_released = movie['Year']
                 score_data = {
                     "title": movie_title,
                     "user_rating": user_rating,
                     "average": average,
                     "votes": votes,
+                    "poster": poster_path,
+                    "year": year_released,
                     "hotness" : 0,
                 }
                 scores.append(score_data)
