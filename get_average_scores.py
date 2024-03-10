@@ -42,6 +42,11 @@ def get_average_scores(movie_title):
         movie_response = requests.get(tmdb_url, headers=tmdb_api_headers)
         year = movie_response.json()['release_date'][:4]
         poster_path = movie_response.json()['poster_path']
+        genre_json = movie_response.json()['genres']
+        genres = []
+        for genre in genre_json:
+            genres.append(genre['name'])
+        movie_overview = movie_response.json()['overview']
         #print(year)
         #print(poster_path)
 
@@ -52,6 +57,8 @@ def get_average_scores(movie_title):
             "Vote Count": movie_vote_count,
             "Poster": poster_path,
             "Year": year,
+            "Genres": genres,
+            "Overview": movie_overview,
         }
         #print(movie_title)
         collection.update_one({'tmdb_id' : tmdb_id}, {'$set' : model}, upsert=True)

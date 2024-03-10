@@ -15,6 +15,19 @@ cluster, db_name, collection_name = connect_to_db()
 db = cluster[db_name]
 collection = db[collection_name]
 
+tmdb_api_headers = {
+    "accept": "application/json",
+    "Authorization": f"Bearer {os.getenv('TMDB_API_READ_ACCESS_TOKEN')}"
+}
+
+genre_url = "https://api.themoviedb.org/3/genre/movie/list?language=en"
+
+genres_list = requests.get(genre_url, headers=tmdb_api_headers)
+
+genres_dict = {}
+for genre in genres_list.json()['genres']:
+    genres_dict[genre['id']] = genre['name']
+
 def get_user_ratings(username):
     scores = []
     user_pages = get_page_count(username)
@@ -24,10 +37,6 @@ def get_user_ratings(username):
         page = requests.get(url.format(username, current_page))
         soup = BeautifulSoup(page.content, "html.parser")
 
-        tmdb_api_headers = {
-            "accept": "application/json",
-            "Authorization": f"Bearer {os.getenv('TMDB_API_READ_ACCESS_TOKEN')}"
-        }
 
         results = soup.find(class_="poster-list")
         movies = results.findAll("li", class_="poster-container")
@@ -64,6 +73,11 @@ def get_user_ratings(username):
                         poster_path = movie.json()['poster_path']
                         year_released = movie.json()['release_date'][:4]
                         collection.update_one({'tmdb_id' : tmdb_id}, {'$set' : {'Poster': poster_path, 'Year': year_released}}, upsert=True)
+                    movie_genres = movie['Genres']
+                    genres = []
+                    for genre in movie_genres:
+                        genres.append(genre)
+                    movie_overview = movie['Overview']
 
                 score_data = {
                     "title": movie_title,
@@ -72,6 +86,8 @@ def get_user_ratings(username):
                     "votes": votes,
                     "poster": poster_path,
                     "year": year_released,
+                    "genres": genres,
+                    "overview": movie_overview,
                     "hotness" : 0,
                 }
                 scores.append(score_data)
