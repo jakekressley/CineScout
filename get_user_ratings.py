@@ -23,6 +23,7 @@ tmdb_api_headers = {
 genre_url = "https://api.themoviedb.org/3/genre/movie/list?language=en"
 
 genres_list = requests.get(genre_url, headers=tmdb_api_headers)
+print(genres_list)
 
 genres_dict = {}
 for genre in genres_list.json()['genres']:
@@ -32,16 +33,20 @@ def get_user_ratings(username):
     scores = []
     user_pages = get_page_count(username)
     current_page = 1
+    #print("testing")
     while current_page <= user_pages:
         url = "https://letterboxd.com/{}/films/page/{}/"
         page = requests.get(url.format(username, current_page))
         soup = BeautifulSoup(page.content, "html.parser")
 
 
-        results = soup.find(class_="poster-list")
+        results = soup.find("ul", class_="poster-list")
+        #print(results)
         movies = results.findAll("li", class_="poster-container")
+        #print(movies)
         for movie in movies:
             movie_title = movie.find("img")['alt']
+            #print(movie_title)
             movie_link = movie.find("div", class_="film-poster")['data-film-slug']
             # get the last character of last class name
             try:
@@ -57,6 +62,7 @@ def get_user_ratings(username):
                             continue
                     except:
                         continue
+                    #print("wasn't in db")
                 else:
                     movie = collection.find_one({'Title': movie_title})
                     print("getting movie:", movie_title)
