@@ -71,7 +71,7 @@ def get_user_ratings(username):
                     votes = movie['Vote Count']
                     poster_path = movie['Poster']
                     year_released = movie['Year']
-                    if poster_path is None:
+                    if not poster_path:
                         tmdb_url = "https://api.themoviedb.org/3/movie/{}"
                         tmdb_url = tmdb_url.format(tmdb_id)
                         movie = requests.get(tmdb_url, headers=tmdb_api_headers)
